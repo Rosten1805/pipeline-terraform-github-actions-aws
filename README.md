@@ -69,11 +69,11 @@ Se creó un bucket S3 de uso general en la región:
 Europa (Irlanda) - eu-west-1
 ```
 
-![Creación inicial del bucket S3](docs/images/01-crear-bucket-s3.png)
+![Creación inicial del bucket S3](images/01-crear-bucket-s3.png)
 
 Durante la configuración inicial se eligió un nombre asociado claramente a su función como almacén del estado de Terraform.
 
-![Configuración del nombre del bucket](docs/images/02-nombre-bucket-s3.png)
+![Configuración del nombre del bucket](images/02-nombre-bucket-s3.png)
 
 El nombre definitivo utilizado es:
 
@@ -81,13 +81,13 @@ El nombre definitivo utilizado es:
 terraform-pipeline-demo-tfstate-project
 ```
 
-![Bucket S3 creado](docs/images/04-bucket-creado.png)
+![Bucket S3 creado](images/04-bucket-creado.png)
 
 ### 2.2 Versionado del bucket
 
 Se habilitó el **control de versiones de S3**.
 
-![Versionado habilitado en el bucket](docs/images/03-versionado-bucket.png)
+![Versionado habilitado en el bucket](images/03-versionado-bucket.png)
 
 Esto es especialmente importante para un backend de Terraform porque permite conservar versiones anteriores del archivo de estado. Si el estado se elimina accidentalmente o queda dañado, S3 conserva versiones anteriores que pueden servir para su recuperación.
 
@@ -99,7 +99,7 @@ Para administrar recursos de AWS desde Terraform se utiliza el provider oficial 
 
 Como buena práctica, se consultó el **Terraform Registry** para verificar la documentación oficial y la versión actual del provider antes de configurar el proyecto.
 
-![Provider oficial de AWS en Terraform Registry](docs/images/05-registry-provider-aws.png)
+![Provider oficial de AWS en Terraform Registry](images/05-registry-provider-aws.png)
 
 En el momento de realizar esta práctica se utilizó:
 
@@ -107,9 +107,7 @@ En el momento de realizar esta práctica se utilizó:
 hashicorp/aws 6.69.1
 ```
 
-La propia documentación del Registry proporciona el bloque de configuración necesario:
-
-![Configuración recomendada del provider AWS](docs/images/06-provider-aws-config.png)
+La propia documentación del Registry proporciona el bloque de configuración necesario.
 
 Se creó el archivo `providers.tf` con la siguiente configuración:
 
@@ -128,11 +126,11 @@ provider "aws" {
 }
 ```
 
-![Archivo providers.tf](docs/images/07-providers-tf.png)
+![Archivo providers.tf](images/07-providers-tf.png)
 
 No se introducen claves de acceso directamente dentro del bloque `provider "aws"`. De esta manera se evita almacenar secretos en el código fuente. El provider de AWS obtiene las credenciales mediante los mecanismos de autenticación soportados por AWS, como el perfil/configuración disponible en el entorno desde el que se ejecuta Terraform.
 
-![Provider AWS sin credenciales hardcodeadas](docs/images/08-provider-aws-sin-credenciales.png)
+![Provider AWS sin credenciales hardcodeadas](images/08-provider-aws-sin-credenciales.png)
 
 > **Buena práctica:** las credenciales de AWS no deben escribirse en archivos `.tf` ni subirse al repositorio de GitHub.
 
@@ -146,7 +144,7 @@ Una vez añadido el provider se ejecutó:
 terraform init
 ```
 
-![Ejecución de terraform init](docs/images/09-terraform-init.png)
+![Ejecución de terraform init](images/09-terraform-init.png)
 
 `terraform init` inicializa el directorio de trabajo y descarga los providers requeridos por la configuración.
 
@@ -178,7 +176,7 @@ terraform {
 }
 ```
 
-![Configuración del backend S3](docs/images/10-backend-tf.png)
+![Configuración del backend S3](images/10-backend-tf.png)
 
 ### Parámetros utilizados
 
@@ -207,8 +205,6 @@ Se consultó el Terraform Registry y se utilizó el módulo:
 ```text
 terraform-aws-modules/vpc/aws
 ```
-
-![Módulo VPC consultado en Terraform Registry](docs/images/11-modulo-vpc-registry.png)
 
 El ejemplo de referencia utilizado parte de una configuración similar a:
 
@@ -247,7 +243,16 @@ A estas alturas, la estructura lógica del proyecto contiene al menos:
 ├── backend.tf
 ├── locals.tf
 ├── main.tf
-└── providers.tf
+├── providers.tf
+├── images/
+└── modules/
+    └── vpc/
+        ├── main.tf
+        ├── outputs.tf
+        ├── README.md
+        ├── variables.tf
+        ├── versions.tf
+        └── vpc-flow-logs.tf
 ```
 
 ### Responsabilidad de cada archivo
@@ -259,6 +264,7 @@ A estas alturas, la estructura lógica del proyecto contiene al menos:
 | `locals.tf` | Centraliza valores locales reutilizables en la configuración. |
 | `main.tf` | Contiene la definición principal de los recursos/módulos de infraestructura. |
 | `.gitignore` | Evita versionar archivos locales o sensibles que no deben formar parte del repositorio. |
+| `modules/vpc/` | Módulo oficial `terraform-aws-modules/vpc/aws` (v6.7.3), vendorizado localmente para la creación de la red. |
 
 ---
 
