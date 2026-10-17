@@ -36,14 +36,7 @@ El proyecto cubre el ciclo completo: autenticación, backend remoto en Amazon S3
 
 # Arquitectura del proyecto
 
-```mermaid
-flowchart LR
-    DEV[Desarrollo local] --> GIT[GitHub]
-    GIT --> GA[GitHub Actions]
-    GA --> TF[Terraform]
-    TF --> AWS[AWS]
-    TF <--> S3[(Amazon S3<br/>terraform.tfstate)]
-```
+![Arquitectura: desarrollo local, GitHub, GitHub Actions, Terraform, AWS y el estado remoto en S3](images/arquitectura-diagrama.png)
 
 Terraform administra la infraestructura de AWS y utiliza un **backend remoto en Amazon S3** para guardar el estado. GitHub Actions actúa como motor de automatización: cuando se realiza un `push` a `main`, se ejecuta el workflow y Terraform trabaja contra el mismo estado remoto.
 
