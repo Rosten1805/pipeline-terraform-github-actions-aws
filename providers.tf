@@ -1,4 +1,5 @@
 terraform {
+  required_version = "~>1.16.5"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -10,6 +11,7 @@ terraform {
 provider "aws" {
 region  = "eu-west-1"
 profile = "estudiante"
+
 default_tags {
     tags = local.tags
   }
