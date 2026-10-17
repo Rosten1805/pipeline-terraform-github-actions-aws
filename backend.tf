@@ -4,6 +4,5 @@ terraform {
         key            = "demo/pipeline.tfstate"
         use_lockfile   = true
         region         = "eu-west-1"
-        profile        = "estudiante"
     }
 }
